@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 // Ensures gofmt doesn't remove the "net" and "os" imports in stage 1 (feel free to remove this!)
@@ -36,21 +38,10 @@ func main() {
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	buf := make([]byte, 1024)
-	_, error := conn.Read(buf)
-	if error != nil {
-		fmt.Println("Error reading from connection: ", error.Error())
-		return
-	}
-
-	for {
-		n, err := conn.Read(buf)
-		if err != nil {
-			fmt.Println("Error reading from connection: ", err.Error())
-			return
-		}
-
-		if string(buf[:n]) == "*1\r\n$4\r\nPING\r\n" {
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		text := scanner.Text()
+		if strings.TrimSpace(text) == "PING" {
 			conn.Write([]byte("+PONG\r\n"))
 		}
 	}
