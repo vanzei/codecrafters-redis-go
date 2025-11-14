@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 	"os"
-	"strings"
+
+	builtinPck "github.com/codecrafters-io/redis-starter-go/app/builtin"
 )
 
 // Ensures gofmt doesn't remove the "net" and "os" imports in stage 1 (feel free to remove this!)
@@ -38,11 +38,23 @@ func main() {
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	scanner := bufio.NewScanner(conn)
-	for scanner.Scan() {
-		text := scanner.Text()
-		if strings.TrimSpace(text) == "PING" {
-			conn.Write([]byte("+PONG\r\n"))
+	for {
+
+		elements, err := builtinPck.ParseRESPArray(conn)
+		if err != nil {
+			fmt.Println("Error Parsing RESP", err)
+			return
 		}
+
+		response, err := ProcessCommand(elements)
+		if err != nil {
+			fmt.Println("Error processing command", err)
+			conn.Write([]byte("-ERR internal error\r\n"))
+			return
+		} else {
+			conn.Write([]byte(response))
+		}
+
 	}
+
 }
