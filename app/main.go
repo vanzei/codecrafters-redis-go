@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"os"
 
@@ -42,6 +43,9 @@ func handleConnection(conn net.Conn) {
 
 		elements, err := builtinPck.ParseRESPArray(conn)
 		if err != nil {
+			if err == io.EOF {
+				return
+			}
 			fmt.Println("Error Parsing RESP", err)
 			return
 		}

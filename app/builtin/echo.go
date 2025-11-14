@@ -54,7 +54,7 @@ func parseBulkString(r *bufio.Reader) (string, error) {
 		return "", err
 	}
 
-	strlen = strings.TrimSuffix(strlen, "\r\b")
+	strlen = strings.TrimSuffix(strlen, "\r\n")
 	lenght, err := strconv.Atoi(strlen)
 	if err != nil {
 		return "", err
