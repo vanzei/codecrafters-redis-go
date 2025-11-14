@@ -6,7 +6,7 @@ import (
 	"net"
 	"os"
 
-	builtinPck "github.com/codecrafters-io/redis-starter-go/app/builtin"
+	parserPck "github.com/codecrafters-io/redis-starter-go/app/parser"
 )
 
 // Ensures gofmt doesn't remove the "net" and "os" imports in stage 1 (feel free to remove this!)
@@ -41,7 +41,7 @@ func handleConnection(conn net.Conn) {
 
 	for {
 
-		elements, err := builtinPck.ParseRESPArray(conn)
+		elements, err := parserPck.ParseRESPArray(conn)
 		if err != nil {
 			if err == io.EOF {
 				return
