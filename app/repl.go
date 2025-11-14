@@ -12,6 +12,8 @@ type CommandHandler func([]string) (string, error)
 var SupportedCommands = map[string]CommandHandler{
 	"PING": builtinPck.HandlePing,
 	"ECHO": builtinPck.HandleEcho,
+	"GET":  builtinPck.HandleGet,
+	"SET":  builtinPck.HandleSet,
 }
 
 func ProcessCommand(elements []string) (string, error) {
