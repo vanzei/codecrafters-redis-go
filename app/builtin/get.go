@@ -26,5 +26,9 @@ func HandleGet(elements []string) (string, error) {
 	if !ok {
 		return "$-1\r\n", nil
 	}
-	return fmt.Sprintf("$%d\r\n%s\r\n", len(val), val), nil
+	valStr := val.Str
+	if val.Type != "string" {
+		return "", fmt.Errorf("WRONGTYPE, not a string")
+	}
+	return fmt.Sprintf("$%d\r\n%s\r\n", len(valStr), valStr), nil
 }

@@ -13,7 +13,8 @@ func HandleSet(elements []string) (string, error) {
 	}
 
 	key, value := elements[1], elements[2]
-	database[key] = value
+
+	database[key] = Value{Type: "string", Str: value}
 
 	delete(expiry, key)
 
