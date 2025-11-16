@@ -10,11 +10,12 @@ import (
 type CommandHandler func([]string) (string, error)
 
 var SupportedCommands = map[string]CommandHandler{
-	"PING":  builtinPck.HandlePing,
-	"ECHO":  builtinPck.HandleEcho,
-	"GET":   builtinPck.HandleGet,
-	"SET":   builtinPck.HandleSet,
-	"RPUSH": builtinPck.HandleRpush,
+	"PING":   builtinPck.HandlePing,
+	"ECHO":   builtinPck.HandleEcho,
+	"GET":    builtinPck.HandleGet,
+	"SET":    builtinPck.HandleSet,
+	"RPUSH":  builtinPck.HandleRpush,
+	"LRANGE": builtinPck.HandleLrange,
 }
 
 func ProcessCommand(elements []string) (string, error) {
