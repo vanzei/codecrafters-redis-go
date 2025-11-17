@@ -15,6 +15,7 @@ var SupportedCommands = map[string]CommandHandler{
 	"GET":    builtinPck.HandleGet,
 	"SET":    builtinPck.HandleSet,
 	"RPUSH":  builtinPck.HandleRpush,
+	"LPUSH":  builtinPck.HandleLpush,
 	"LRANGE": builtinPck.HandleLrange,
 }
 

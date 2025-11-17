@@ -16,6 +16,9 @@ func HandleLrange(elements []string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Start Index not a number")
 	}
+
+	// Convert -6 to len(list) + (-6). If len(list)=5, that yields -1. Clamp to 0 because start < 0.
+	// Convert -1 to len(list) + (-1) → 4. Clamp upper bound to len-1 (already 4).
 	if startIdx < 0 {
 		startIdx += len(dbK.List)
 	}
@@ -29,6 +32,7 @@ func HandleLrange(elements []string) (string, error) {
 	if endIdx < 0 {
 		endIdx += len(dbK.List)
 	}
+
 	if (endIdx) > len(dbK.List) {
 		endIdx = len(dbK.List) - 1
 	}
