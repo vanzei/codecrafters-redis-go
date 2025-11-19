@@ -40,7 +40,6 @@ func HandleLrange(elements []string) (string, error) {
 	if startIdx > endIdx || startIdx >= len(dbK.List) {
 		return "*0\r\n", nil
 	}
-	fmt.Println(startIdx, endIdx)
 
 	result := dbK.List[startIdx : endIdx+1]
 
