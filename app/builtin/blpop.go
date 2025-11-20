@@ -15,8 +15,10 @@ func HandleBlpop(elements []string) (string, error) {
 	}
 
 	lists := elements[1 : len(elements)-1]
-	timeoutSec, err := strconv.Atoi(elements[len(elements)-1])
-	if err != nil {
+	timeoutStr := elements[len(elements)-1]
+	// timeoutSec, err := strconv.Atoi(timeoutStr)
+	timeoutSec, err := strconv.ParseFloat(timeoutStr, 64)
+	if err != nil || timeoutSec < 0 {
 		return "", fmt.Errorf("Invalid timeout")
 	}
 
@@ -37,7 +39,7 @@ func HandleBlpop(elements []string) (string, error) {
 	var timer *time.Timer
 	var timeout <-chan time.Time
 	if timeoutSec > 0 {
-		timer = time.NewTimer(time.Duration(timeoutSec) * time.Second)
+		timer = time.NewTimer(time.Duration(timeoutSec * float64(time.Second)))
 		timeout = timer.C
 	}
 
@@ -56,7 +58,7 @@ func HandleBlpop(elements []string) (string, error) {
 	case resp := <-req.result:
 		return resp, nil
 	case <-timeout:
-		return "$-1\r\n", nil
+		return "*-1\r\n", nil
 	}
 
 }
