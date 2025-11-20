@@ -5,6 +5,29 @@ import (
 	"strings"
 )
 
+func wakeFirstWaiter(key string) bool {
+	queue := waiters[key]
+	if len(queue) == 0 {
+		return false
+	}
+
+	req := queue[0]
+	removeWaiter(req)
+
+	resp, _ := HandleLpop([]string{"LPOP", key})
+	select {
+	case req.result <- fmt.Sprintf("*2\r\n$%d\r\n%s\r\n%s", len(key), key, resp):
+	default:
+	}
+	if req.timeout != nil {
+		req.timeout.Stop()
+	} else {
+		// req.timeout.Stop()
+	}
+	return true
+
+}
+
 func HandleLpush(elements []string) (string, error) {
 	if len(elements) < 3 || strings.ToUpper(elements[0]) != "LPUSH" {
 		return "", fmt.Errorf("Invalid LPUSH command")
@@ -25,5 +48,6 @@ func HandleLpush(elements []string) (string, error) {
 	val.List = list
 
 	database[key] = val
+	wakeFirstWaiter(key)
 	return fmt.Sprintf(":%d\r\n", len(val.List)), nil
 }

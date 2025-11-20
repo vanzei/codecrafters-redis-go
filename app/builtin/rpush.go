@@ -20,5 +20,6 @@ func HandleRpush(elements []string) (string, error) {
 	val.List = append(val.List, elements[2:]...)
 
 	database[key] = val
+	wakeFirstWaiter(key)
 	return fmt.Sprintf(":%d\r\n", len(val.List)), nil
 }
