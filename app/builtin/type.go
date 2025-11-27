@@ -1,3 +1,11 @@
+package builtin
+
+import (
+	"fmt"
+	"strings"
+	"time"
+)
+
 func HandleType(elements []string) (string, error) {
 	if len(elements) != 2 || strings.ToUpper(elements[0]) != "TYPE" {
 		return "", fmt.Errorf("Invalid TYPE command")
