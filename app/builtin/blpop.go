@@ -48,7 +48,6 @@ func HandleBlpop(elements []string) (string, error) {
 		lists:    lists,
 		result:   make(chan string, 1),
 		timeout:  timer,
-		// timeout:  time.NewTimer(time.Duration(timeoutSec) * time.Second),
 	}
 
 	addWaiter(req)
