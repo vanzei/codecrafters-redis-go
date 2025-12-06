@@ -52,12 +52,12 @@ func handleConnection(conn net.Conn) {
 
 		response, err := ProcessCommand(elements)
 		if err != nil {
-			fmt.Println("Error processing command", err)
-			conn.Write([]byte("-ERR internal error\r\n"))
-			return
-		} else {
-			conn.Write([]byte(response))
+			// Surface command errors to the client instead of masking as internal errors.
+			conn.Write([]byte(fmt.Sprintf("-%s\r\n", err.Error())))
+			continue
 		}
+
+		conn.Write([]byte(response))
 
 	}
 

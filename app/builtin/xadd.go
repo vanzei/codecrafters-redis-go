@@ -46,6 +46,7 @@ func HandleXadd(args []string) (string, error) {
 	appendEntry(stream, id, fields)
 	applyTrim(stream, trim)
 
+	//return fmt.Sprintf("%d-%d", id.Ms, id.Seq), nil
 	idStr := fmt.Sprintf("%d-%d", id.Ms, id.Seq)
 	return fmt.Sprintf("$%d\r\n%s\r\n", len(idStr), idStr), nil
 }
@@ -186,6 +187,10 @@ func nextID(stream *Stream, token string) (StreamID, error) {
 		id, err := parseExplicitID(token)
 		if err != nil {
 			return StreamID{}, err
+		}
+		// Reject 0-0 explicitly; stream IDs must be greater than 0-0 even on an empty stream.
+		if id.Ms == 0 && id.Seq == 0 {
+			return StreamID{}, fmt.Errorf("ERR The ID specified in XADD must be greater than 0-0")
 		}
 		if compareID(id, last) <= 0 {
 			return StreamID{}, fmt.Errorf("ERR The ID specified in XADD is equal or smaller than the target stream top item")
