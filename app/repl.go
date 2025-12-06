@@ -21,6 +21,7 @@ var SupportedCommands = map[string]CommandHandler{
 	"LPOP":   builtinPck.HandleLpop,
 	"BLPOP":  builtinPck.HandleBlpop,
 	"TYPE":   builtinPck.HandleType,
+	"XADD":   builtinPck.HandleXadd,
 }
 
 func ProcessCommand(elements []string) (string, error) {

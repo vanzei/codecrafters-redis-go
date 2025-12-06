@@ -3,9 +3,10 @@ package builtin
 import "time"
 
 type Value struct {
-	Type string
-	Str  string
-	List []string
+	Type   string
+	Str    string
+	List   []string
+	Stream *Stream
 }
 
 var database = make(map[string]Value)
