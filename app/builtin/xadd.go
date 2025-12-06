@@ -184,6 +184,28 @@ func nextID(stream *Stream, token string) (StreamID, error) {
 		}
 		return id, nil
 	default:
+		// Partially auto-generated IDs: "<ms>-*" -> server picks the seq
+		if strings.HasSuffix(token, "-*") {
+			msPart := strings.TrimSuffix(token, "-*")
+			ms, err := strconv.ParseUint(msPart, 10, 64)
+			if err != nil {
+				return StreamID{}, fmt.Errorf("ERR invalid stream id specified as stream command argument")
+			}
+			// pick seq based on last ID
+			var seq uint64
+			if ms < last.Ms {
+				return StreamID{}, fmt.Errorf("ERR The ID specified in XADD is equal or smaller than the target stream top item")
+			} else if ms == last.Ms {
+				seq = last.Seq + 1
+			} else { // ms > last.Ms
+				seq = 0
+			}
+			id := StreamID{Ms: ms, Seq: seq}
+			if compareID(id, last) <= 0 {
+				return StreamID{}, fmt.Errorf("ERR The ID specified in XADD is equal or smaller than the target stream top item")
+			}
+			return id, nil
+		}
 		id, err := parseExplicitID(token)
 		if err != nil {
 			return StreamID{}, err
